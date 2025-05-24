@@ -1,4 +1,3 @@
-
 # Prior-based Noisy Text Data Filtering: Fast and Strong Alternative For Perplexity
 
 ---
@@ -28,7 +27,7 @@ $ pip install bitsandbytes==0.42.0 git+https://github.com/huggingface/peft.git
 
 ### Step1. Prepare datasets
 
-You can donwload **Dolma** from  [https://huggingface.co/datasets/allenai/dolma](https://huggingface.co/datasets/allenai/dolma)
+You can donwload **Dolma** from  https://huggingface.co/datasets/allenai/dolma
 
 After downloading, tokenize and split dataset via the following command.
 
@@ -44,13 +43,14 @@ Assess token priors and $\mu_d, \sigma_d$ with the following command.
 python s2_prior.py
 ```
 
-Assess PPL with the following command
+Assess PPL with the following command. The reference model should be trained using the  `s4_pretrain.py` , with the arguments similar to that described in Step 4.  As explained in the paper, the model size is 137M (equivalent to the gpt2-small architecture), and the ``no_filter'' indices must be used.
 
 ```bash
 python do4_ppl.py \
 dataset=dolma_flatten-train \
 dataset_path=dataset/dolma_flatten/dolma_flatten-train_train_bs512_wrapped.dat \
-batch_size=32
+batch_size=32 \
++model_name=outputs/gpt2_small_lr2e-4_dolma_no_filter/cp_ep1_gstep20000
 ```
 
 ### Step3. Build filtered indices
@@ -84,4 +84,34 @@ You can choose filter with the argument `+filter_file`
 
 ### Step5. Evaluation
 
-We use Mosaic gauntlet for evaluation.  ([https://github.com/mosaicml/llm-foundry/blob/main/scripts/eval/local_data/EVAL_GAUNTLET.md](https://github.com/mosaicml/llm-foundry/blob/main/scripts/eval/local_data/EVAL_GAUNTLET.md) )
+We use Mosaic gauntlet for evaluation.  (https://github.com/mosaicml/llm-foundry/blob/main/scripts/eval/local_data/EVAL_GAUNTLET.md )
+
+---
+
+## Other baselines
+
+We also provide code for other baselines, e.g., DSIR.
+
+### DSIR
+
+The DSIR code is a modified version of the code provided in [1] (https://github.com/p-lambda/dsir).
+
+Run the following script.
+
+```bash
+python run_dsir.py \
+  --dataset_name dolma_flatten-train \
+  --num_shards 129 \
+  --raw_path_template "/dataset/dolma/dolma_flatten-train/data-{subset}-of-00129.arrow" \
+  --target_path "path/to/wiki+pile/target.arrow" \
+  --cache_dir "./cache" \
+  --mid_output_dir "./resampled" \
+  --final_output_path "./filtered_indices/dolma_flatten-train_DSIR.pt" \
+  --num_to_sample 10000000
+```
+
+---
+
+## References
+
+[1] Xie, Sang Michael, et al. "Data selection for language models via importance resampling." *Advances in Neural Information Processing Systems* 36 (2023)
