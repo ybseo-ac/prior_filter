@@ -356,14 +356,14 @@ def get_dataset(
   elif dataset_name == 'pile_github-train':
     dataset = datasets.load_dataset(
     'json',
-    data_files="/home/ybseo/.cache/kagglehub/datasets/dschettler8845/the-pile-github-files-part-03/versions/1/*.jsonl",
+    data_files="path/to/pile_github",
     cache_dir= 'dataset/pile_github',
     split='train[:-100000]'
     )
   elif dataset_name == 'pile_github-valid':
     dataset = datasets.load_dataset(
     'json',
-    data_files="/home/ybseo/.cache/kagglehub/datasets/dschettler8845/the-pile-github-files-part-03/versions/1/*.jsonl",
+    data_files="path/to/pile_github",
     cache_dir= 'dataset/pile_github',
     split='train[:-100000]'
     )

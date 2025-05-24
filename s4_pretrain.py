@@ -1,7 +1,6 @@
 
-# /home/ybseo/mdlm/ba_exp1_2_ft_multigpu_stepeval.py   rlwidja
 import os
-os.environ["TOKENIZERS_PARALLELISM"] = "false"  # llada에서 워닝 없애려고 추가함
+os.environ["TOKENIZERS_PARALLELISM"] = "false"  
 
 import sys
 import tempfile
@@ -100,15 +99,15 @@ def demo_basic(rank, world_size, train_data, valid_data, trainer): # run()
 
     train_sampler = DistributedSampler(train_data, num_replicas=world_size, rank=rank, shuffle=True, seed=config.seed)
     dataloader_train = DataLoader(train_data,batch_size=config.loader.batch_size,
-      # num_workers=config.loader.num_workers,  # 이거 하면 느려짐
+      # num_workers=config.loader.num_workers,
       pin_memory=config.loader.pin_memory,
-      # persistent_workers=True,  # 이거 하면 느려짐
+      # persistent_workers=True,  
       sampler=train_sampler)
     
     valid_sampler = DistributedSampler(valid_data, num_replicas=world_size, rank=rank, shuffle=False, seed=config.seed) 
     dataloader_valid= DataLoader(valid_data,
                                  batch_size=config.loader.eval_batch_size,
-      # num_workers=config.loader.num_workers,  # 이거 하면 느려짐
+      # num_workers=config.loader.num_workers,  
       pin_memory=config.loader.pin_memory,
       generator=None,
       sampler=valid_sampler)
@@ -134,7 +133,6 @@ def demo_basic(rank, world_size, train_data, valid_data, trainer): # run()
 
     tqdm_disable = False if rank==0 else True
     
-    # loss_mean=torch.tensor(0.).to('cuda') #  epoch=-1 에서 eval 하기위함
     ####### if resume ##########
     epoch = 0
     global_step =0
@@ -164,8 +162,6 @@ def demo_basic(rank, world_size, train_data, valid_data, trainer): # run()
           for step, batch_data in tqdm(enumerate(dataloader_train), disable=tqdm_disable, total=total_steps):
             if global_step >= resume_global_step:
               batch_data = {k: v.to(rank, non_blocking=True) for k, v in batch_data.items()}
-              # if rank==0:
-                # print(batch_data)
               loss = ddp_model.module._compute_loss(batch_data)
 
               if torch.isnan(loss).any():
@@ -175,10 +171,7 @@ def demo_basic(rank, world_size, train_data, valid_data, trainer): # run()
               loss.backward()
               loss_list.append(loss.clone().detach())
               ddp_model.module.loss_metric.update(loss.detach(), torch.tensor(1.))
-              # gradiant accumulation # accum_step=1  이면 accum 안함
               if ((step + 1) % config.trainer.accumulate_grad_batches ==0) or (step + 1) == len(dataloader_train) :
-                  # if rank==0:
-                      # print(f"{step+1}  {len(dataloader_train)}")
                   optimizer.step()
                   scheduler.step()
                   optimizer.zero_grad()
@@ -229,7 +222,7 @@ def demo_basic(rank, world_size, train_data, valid_data, trainer): # run()
 
 
 def run_demo(demo_fn, world_size, train_data, valid_data,  trainer):
-    mp.spawn(demo_fn,  # demo_fn  이  5번파일 run() 과 같음
+    mp.spawn(demo_fn,  # 
             args=(world_size, train_data, valid_data, trainer),
             nprocs=world_size,
             join=True)
@@ -238,7 +231,7 @@ def run_demo(demo_fn, world_size, train_data, valid_data,  trainer):
 
 if __name__ == "__main__":
     L.seed_everything(config.seed)
-    n_gpus = torch.cuda.device_count() # 타이탄 서버는 3개
+    n_gpus = torch.cuda.device_count() # 
     # assert n_gpus >= 2, f"Requires at least 2 GPUs to run, but got {n_gpus}"
     world_size = n_gpus
 
