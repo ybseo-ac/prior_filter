@@ -1,5 +1,7 @@
 # Prior-based Noisy Text Data Filtering: Fast and Strong Alternative For Perplexity
 
+**Yeongbin Seo,  Gayoung Kim, Jaehyung kim †, Jinyoung Yeo †**      ( †  indicates advisors)
+
 ---
 
 ### abstract
