@@ -14,7 +14,7 @@ As large language models (LLMs) are pretrained on massive web corpora, careful s
 
 ### Issue
 
-**Clarification on the meaning of “document”**
+**Clarification on the meaning of “document”**  (2026.05.24)
 
 A reader pointed out that the term “document” in the paper may be misleading. In the paper, the term “document” was intended to mean a text data point $d$, as defined in Section 2.1. More precisely, a data point is a fixed-length token sequence $d = (x_1, x_2, \ldots, x_N)$, $d \in D$, where each $x_i$ is a token and $D$ is the dataset. This reflects the common practice in the pretraining stage of using fixed-length text blocks as data points. Our method aims to filter out noisy data points from $D$ before training. 
 
