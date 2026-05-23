@@ -2,7 +2,7 @@
 
 **Yeongbin Seo,  Gayoung Kim, Jaehyung kim †, Jinyoung Yeo †**      ( †  indicates advisors)
 
-Presented at ICLR 2026 main track
+Presented at **ICLR 2026** main track
 
 ---
 
