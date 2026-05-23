@@ -2,7 +2,7 @@
 
 **Yeongbin Seo,  Gayoung Kim, Jaehyung kim †, Jinyoung Yeo †**      ( †  indicates advisors)
 
-(2025.09.18) rejected with high score (4.75/6.0) from NeurIPS 2025
+Presented at ICLR 2026 main track
 
 ---
 
